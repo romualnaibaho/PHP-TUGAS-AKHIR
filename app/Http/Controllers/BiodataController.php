@@ -28,10 +28,10 @@ class BiodataController extends Controller
     public function store(Request $request){
 
         $this->validate($request, [
-            'file' => 'required|max:2048'
+            'foto' => 'required|max:2048'
         ]);
 
-        $file = $request->file('file');
+        $file = $request->file('foto');
         $nama_file = time()."_".$file->getClientOriginalName();
 
         $tujuan_upload = 'data_file';
@@ -42,7 +42,7 @@ class BiodataController extends Controller
                 'no_hp' => $request->no_hp,
                 'alamat' => $request->alamat,
                 'hobi' => $request->hobi,
-                'foto' => $request->foto
+                'foto' => $nama_file
             ]);
 
             $res['message'] = "Success!";
@@ -54,12 +54,12 @@ class BiodataController extends Controller
 
     public function update(Request $request){
 
-        if(!empty($request->file)){
+        if(!empty($request->foto)){
             $this->validate($request, [
-                'file' => 'required|max:2048'
+                'foto' => 'required|max:2048'
             ]);
 
-            $file = $request->file('file');
+            $file = $request->file('foto');
 
             $nama_file = time()."_".$file->getClientOriginalName();
             $tujuan_upload = 'data_file';
@@ -74,7 +74,7 @@ class BiodataController extends Controller
                     'no_hp' => $request->no_hp,
                     'alamat' => $request->alamat,
                     'hobi' => $request->hobi,
-                    'foto' => $request->foto
+                    'foto' => $nama_file
                 ]);
 
                 $res['message'] = "Success!";
@@ -105,14 +105,14 @@ class BiodataController extends Controller
 
     public function delete($id){
 
-        $data = Tabel12::where('id', $id)->get();
+        $data = Biodata::where('id', $id)->get();
 
         foreach($data as $data){
 
-            if(file_exist(public_path('data_file/'.$data->foto))){
+            if(file_exists(public_path('data_file/'.$data->foto))){
 
                 @unlink(public_path('data_file/'.$data->foto));
-                Tabel12::where('id', $id)->delete();
+                Biodata::where('id', $id)->delete();
                 $res['message'] = "Success!";
                 
                 return response($res);
